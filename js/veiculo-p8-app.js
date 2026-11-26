@@ -521,8 +521,10 @@
           el('span', {}, step.title),
           el(
             'span',
-            { class: `p8-review-count ${pending.length ? '' : 'complete'}` },
-            pending.length ? `${pending.length} a completar` : 'Concluída',
+            { class: `p8-review-count ${pending.length ? 'pending' : 'complete'}` },
+            pending.length
+              ? `${pending.length} ${pending.length === 1 ? 'pendente' : 'pendentes'}`
+              : 'Concluída',
           ),
         ),
       );
