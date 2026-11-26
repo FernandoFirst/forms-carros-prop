@@ -232,12 +232,15 @@
     }
     control.addEventListener('blur', () => showError(vehicle, field, control, error));
     if (p.value(vehicle, field)) showError(vehicle, field, control, error);
+    // append() nativo transforma null em texto; omitir os elementos opcionais ausentes.
     wrapper.append(
-      label,
-      field.unit ? el('div', { class: 'p8-unit' }, control, el('span', {}, field.unit)) : control,
-      helper,
-      counter,
-      error,
+      ...[
+        label,
+        field.unit ? el('div', { class: 'p8-unit' }, control, el('span', {}, field.unit)) : control,
+        helper,
+        counter,
+        error,
+      ].filter((node) => node != null),
     );
     return wrapper;
   }

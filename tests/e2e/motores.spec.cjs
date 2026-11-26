@@ -273,6 +273,7 @@ test('cadastro completo percorre todos os requisitos, salva conferido e exporta 
   await expect(page.locator('#motor-panel-revisao')).toContainText(
     'Todos os requisitos foram preenchidos',
   );
+  await expect(page.locator('#motor-panel-revisao')).not.toContainText(/\bnull\b/);
   await page.screenshot({ path: info.outputPath('motor-revisao.png') });
   const pending = page.waitForEvent('download');
   await page.locator('#motor-export').click();

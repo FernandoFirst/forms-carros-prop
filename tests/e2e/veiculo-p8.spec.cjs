@@ -188,3 +188,53 @@ test('P8 abre diretamente por file sem serviços externos', async ({ page }) => 
   await expect(field(page, 'marca')).toBeVisible();
   expect(external).toEqual([]);
 });
+
+test('correções visuais: barra não sobrepõe campos, nenhum null é renderizado e Motores vem primeiro', async ({
+  page,
+}, info) => {
+  await start(page);
+  await expect(page.locator('.domain-switch button')).toHaveText(['Motores MAR1', 'Veículos']);
+  const noNullText = async () => {
+    const placeholders = await page.locator('#panel-formulario').evaluate((root) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const unexpected = [];
+      while (walker.nextNode()) {
+        const text = walker.currentNode.textContent.trim();
+        if (text === 'null' || text === 'undefined') unexpected.push(text);
+      }
+      return unexpected;
+    });
+    expect(placeholders).toEqual([]);
+  };
+  await noNullText();
+  await expect(page.locator('#vehicle-workspace .fleet-panel')).toHaveCSS('position', 'static');
+  await field(page, 'idReferencia').evaluate((input) => input.scrollIntoView({ block: 'start' }));
+  const overlaps = await page.evaluate(() => {
+    const bar = document.querySelector('#vehicle-workspace .fleet-panel').getBoundingClientRect();
+    const input = document.getElementById('field-idReferencia').getBoundingClientRect();
+    return bar.bottom > input.top && bar.top < input.bottom;
+  });
+  expect(overlaps).toBe(false);
+  await field(page, 'marca').click();
+  await expect(field(page, 'marca')).toBeFocused();
+  await step(page, 'veiculoEnsaio');
+  await noNullText();
+  await expect(field(page, 'pesoBrutoTotal')).toBeVisible();
+  await field(page, 'pesoBrutoTotal').fill('12,5');
+  await expect(field(page, 'pesoBrutoTotal')).toHaveValue('12,5');
+  await noNullText();
+  await page.screenshot({
+    path: info.outputPath('campos-sem-sobreposicao-e-null.png'),
+    fullPage: true,
+  });
+  await page.locator('#domain-motores').click();
+  await page.reload();
+  await expect(page.locator('#motor-workspace')).toBeVisible();
+  await page.locator('#domain-veiculos').click();
+  await page.reload();
+  await expect(field(page, 'pesoBrutoTotal')).toHaveValue('12,5');
+  await noNullText();
+  await page.locator('#tab-planilha').click();
+  if (page.viewportSize().width >= 1200)
+    await expect(page.locator('#vehicle-workspace .fleet-panel')).toHaveCSS('position', 'sticky');
+});

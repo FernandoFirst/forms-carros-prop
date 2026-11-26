@@ -176,6 +176,8 @@ As limitações abaixo se referem ao módulo original de veículos. O módulo de
 
 Selecione **Motores MAR1** no início da página. O levantamento de motores é independente dos veículos: alternar entre as áreas preserva os rascunhos e mantém as 33 colunas oficiais da exportação de veículos.
 
+**Motores MAR1** aparece antes de **Veículos** na navegação. A área utilizada continua sendo lembrada durante a sessão. No formulário de veículos, a barra compacta de seleção acompanha a rolagem normal da página, sem sobrepor os campos; a posição fixa fica restrita à lista lateral da planilha no desktop.
+
 1. Clique em **Novo motor** e preencha a identificação.
 2. Em **Dados do motor**, avance pelas sete etapas: identificação/origem, configuração, funcionamento, injeção/controle, admissão/escape, emissões e componentes. Fabricantes e componentes aceitam vários itens.
 3. Em **Ensaios e responsável**, avance pelas seis etapas: motor do ensaio, laboratório/normas, gases, material particulado, resultados e responsável técnico (engenheiro, CREA e agente técnico).

@@ -822,28 +822,30 @@
     const issues = allIssues(record);
     const review = panels.revisao;
     review.replaceChildren(
-      el(
-        'h3',
-        {},
+      ...[
+        el(
+          'h3',
+          {},
+          issues.length
+            ? `${issues.length} pendência(s) para conferir`
+            : 'Todos os requisitos foram preenchidos.',
+        ),
+        el(
+          'p',
+          { class: 'motor-heading-note' },
+          'Confira os dados antes de compartilhar. As pendências estão agrupadas por etapa; selecione um campo para corrigi-lo.',
+        ),
         issues.length
-          ? `${issues.length} pendência(s) para conferir`
-          : 'Todos os requisitos foram preenchidos.',
-      ),
-      el(
-        'p',
-        { class: 'motor-heading-note' },
-        'Confira os dados antes de compartilhar. As pendências estão agrupadas por etapa; selecione um campo para corrigi-lo.',
-      ),
-      issues.length
-        ? button(
-            'Continuar pela primeira pendência',
-            () => {
-              showErrors = true;
-              jump(issues[0]);
-            },
-            'button button-primary motor-resume',
-          )
-        : null,
+          ? button(
+              'Continuar pela primeira pendência',
+              () => {
+                showErrors = true;
+                jump(issues[0]);
+              },
+              'button button-primary motor-resume',
+            )
+          : null,
+      ].filter((node) => node != null),
     );
     for (const step of m.steps) {
       const pending = issues.filter((issue) => step.sections.includes(issue.section));

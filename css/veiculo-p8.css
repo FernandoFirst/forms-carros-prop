@@ -28,6 +28,9 @@
   display: block;
 }
 .vehicle-form-mode .fleet-panel {
+  /* A barra compacta acompanha a página; só a lista lateral usa sticky. */
+  position: static;
+  top: auto;
   display: flex;
   min-height: 0;
   flex-direction: row;
