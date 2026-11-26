@@ -94,6 +94,9 @@
   display: none;
 }
 .p8-shell {
+  --p8-pending-ink: #8a5a13;
+  --p8-pending-dot: #c18a28;
+  --p8-pending-soft: #fff8e6;
   min-width: 0;
 }
 .p8-topline {
@@ -188,10 +191,10 @@
   margin-top: 4px;
 }
 .p8-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 12px;
   min-height: 44px;
   width: 100%;
   padding: 10px 12px;
@@ -213,9 +216,24 @@
   font-weight: 600;
 }
 .p8-nav-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
   color: #22734c;
-  font-size: 0.86rem;
-  font-weight: 400;
+}
+.p8-nav-state .icon {
+  width: 14px;
+  height: 14px;
+}
+.p8-pending-dot,
+.p8-field-state {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--p8-pending-dot);
 }
 .p8-nav-state:empty {
   display: none;
@@ -245,6 +263,10 @@
   margin: 0 0 28px;
 }
 .p8-step-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
   color: var(--muted);
   font-size: 0.93rem;
   margin-bottom: 8px;
@@ -321,6 +343,10 @@
 }
 .p8-body .field-error {
   font-size: 0.93rem;
+}
+.p8-field-state {
+  margin-left: 8px;
+  vertical-align: middle;
 }
 .p8-group,
 .p8-complement,
@@ -605,8 +631,8 @@
   padding: 3px 10px;
   border: 1px solid #f1dfb4;
   border-radius: 999px;
-  background: #fff8e6;
-  color: #8a5a13;
+  background: var(--p8-pending-soft);
+  color: var(--p8-pending-ink);
   font-weight: 500;
 }
 .p8-review > .button {

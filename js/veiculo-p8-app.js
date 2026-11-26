@@ -84,16 +84,42 @@
     return Math.round((answered / Math.max(1, fields.length + lists.length)) * 100);
   };
   const summary = (vehicle) => `${completion(vehicle)}% preenchido`;
+  const stageStatus = (count) =>
+    count ? `${count} ${count === 1 ? 'pendente' : 'pendentes'}` : 'Concluída';
+  const pendingMarker = () =>
+    el('span', { class: 'p8-field-state', hidden: true, 'aria-hidden': 'true', title: 'Pendente' });
   const updateSummary = (vehicle) => {
     const node = root.querySelector('[data-p8-summary]');
     if (node) node.textContent = summary(vehicle);
     const progress = root.querySelector('#p8-progress');
     if (progress) progress.value = completion(vehicle);
     const issues = p.issues(vehicle);
-    root.querySelectorAll('[data-p8-stage]').forEach((item) => {
-      const complete = !issues.some((issue) => issue.step === item.dataset.p8Stage);
-      item.classList.toggle('is-complete', complete);
-      item.querySelector('.p8-nav-state').textContent = complete ? 'Concluída' : '';
+    const counts = new Map();
+    for (const issue of issues) counts.set(issue.step, (counts.get(issue.step) || 0) + 1);
+    root.querySelectorAll('[data-p8-stage], [data-p8-current-status]').forEach((item) => {
+      const count = counts.get(item.dataset.p8Stage || item.dataset.p8CurrentStatus) || 0;
+      const status = item.querySelector('.p8-nav-state') || item;
+      item.classList.toggle('is-complete', !count);
+      status.classList.toggle('pending', !!count);
+      status.classList.toggle('complete', !count);
+      if (item.dataset.p8Stage) {
+        status.title = stageStatus(count);
+        status.replaceChildren(
+          count
+            ? el('span', { class: 'p8-pending-dot', 'aria-hidden': 'true' })
+            : app.icon('check'),
+          el('span', { class: 'sr-only' }, stageStatus(count)),
+        );
+      } else status.textContent = stageStatus(count);
+    });
+    root.querySelectorAll('[data-p8-option]').forEach((option) => {
+      option.textContent = `${option.dataset.p8Title} · ${stageStatus(counts.get(option.value) || 0)}`;
+    });
+    root.querySelectorAll('[data-p8-pending]').forEach((control) => {
+      const wrapper = control.closest('.field');
+      const pending = !control.value.trim();
+      wrapper.classList.toggle('is-pending', pending);
+      wrapper.querySelector('.p8-field-state').hidden = !pending;
     });
   };
   const showError = (vehicle, field, control, error) => {
@@ -124,10 +150,12 @@
       field.required
         ? el('span', { class: 'required-mark', 'aria-hidden': 'true' }, ' *')
         : el('span', { class: 'p8-optional' }, 'Opcional'),
+      field.required && field.type !== 'calculated' ? pendingMarker() : null,
     );
     const attrs = {
       id,
       'data-p8-key': field.key,
+      'data-p8-pending': field.required && field.type !== 'calculated' ? '' : null,
       'aria-required': String(field.required),
       'aria-describedby': `${id}-help ${id}-error`,
       autocomplete: 'off',
@@ -275,6 +303,8 @@
           id,
           type: 'text',
           inputmode: column.type === 'number' ? 'decimal' : null,
+          'aria-required': 'true',
+          'data-p8-pending': '',
           'aria-describedby': `${id}-error`,
           autocomplete: 'off',
         });
@@ -294,7 +324,13 @@
         });
         input.addEventListener('blur', validate);
         fields.append(
-          el('div', { class: 'field' }, el('label', { for: id }, column.label, ' *'), input, error),
+          el(
+            'div',
+            { class: 'field' },
+            el('label', { for: id }, column.label, ' *', pendingMarker()),
+            input,
+            error,
+          ),
         );
       }
       const remove = button('Remover registro', async () => {
@@ -522,9 +558,7 @@
           el(
             'span',
             { class: `p8-review-count ${pending.length ? 'pending' : 'complete'}` },
-            pending.length
-              ? `${pending.length} ${pending.length === 1 ? 'pendente' : 'pendentes'}`
-              : 'Concluída',
+            stageStatus(pending.length),
           ),
         ),
       );
@@ -570,7 +604,7 @@
   }
 
   const areaMemory = new Map();
-  function stageNavigation(vehicle, area, current, issues) {
+  function stageNavigation(vehicle, area, current) {
     const nav = el('nav', { class: 'p8-stage-nav', 'aria-label': 'Etapas da área' });
     const steps = applicableSteps(vehicle).filter((item) => item.area === area);
     const groupFor = (item) =>
@@ -589,12 +623,13 @@
       const items = steps.filter((item) => groupFor(item) === group);
       const list = el('ul', {});
       for (const item of items) {
-        const complete = !issues.some((issue) => issue.step === item.key);
-        const control = button(item.title, () => go(vehicle, item.key));
-        control.className = `p8-nav-item ${item.key === current ? 'is-current' : ''} ${complete ? 'is-complete' : ''}`;
+        const control = button(el('span', { class: 'p8-nav-title' }, item.title), () =>
+          go(vehicle, item.key),
+        );
+        control.className = `p8-nav-item ${item.key === current ? 'is-current' : ''}`;
         control.dataset.p8Stage = item.key;
         if (item.key === current) control.setAttribute('aria-current', 'step');
-        control.append(el('span', { class: 'p8-nav-state' }, complete ? 'Concluída' : ''));
+        control.append(el('span', { class: 'p8-nav-state' }));
         list.append(el('li', {}, control));
       }
       if (group) {
@@ -662,7 +697,13 @@
           { label: area },
           steps
             .filter((item) => item.area === area)
-            .map((item) => el('option', { value: item.key }, item.title)),
+            .map((item) =>
+              el(
+                'option',
+                { value: item.key, 'data-p8-option': '', 'data-p8-title': item.title },
+                item.title,
+              ),
+            ),
         ),
       );
     nav.append(el('option', { value: 'revisao' }, 'Revisão do cadastro'));
@@ -728,6 +769,15 @@
         'p',
         { class: 'p8-step-caption' },
         step ? `${area} · Etapa ${areaIndex + 1} de ${areaSteps.length}` : 'Conferência final',
+        step
+          ? el('span', {
+              class: 'p8-review-count p8-stage-status',
+              'data-p8-current-status': key,
+              role: 'status',
+              'aria-live': 'polite',
+              'aria-atomic': 'true',
+            })
+          : null,
       ),
       el('h2', { tabindex: '-1' }, step?.title || 'Revisão do cadastro'),
       descriptions[key] ? el('p', { class: 'p8-description' }, descriptions[key]) : null,
@@ -746,7 +796,7 @@
     const layout = el(
       'div',
       { class: `p8-layout ${key === 'revisao' ? 'p8-layout-review' : ''}` },
-      key !== 'revisao' ? stageNavigation(vehicle, area, key, issues) : null,
+      key !== 'revisao' ? stageNavigation(vehicle, area, key) : null,
       stage,
     );
     root.append(
@@ -841,7 +891,7 @@
               'Documentos desta etapa',
               el(
                 'span',
-                { class: 'p8-review-count' },
+                { class: `p8-review-count ${pending ? 'pending' : ''}` },
                 pending ? `${pending} a anexar` : `${documents.length} documentos`,
               ),
             ),
@@ -880,6 +930,7 @@
       ),
     );
     stage.append(actions);
+    updateSummary(vehicle);
     p.updateSaveStatus();
   };
 

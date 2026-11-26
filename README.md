@@ -57,6 +57,8 @@ O link publicado abre a aplicação para cada pessoa. Os preenchimentos e PDFs c
 
 As etapas podem ser abertas diretamente, e **Voltar** mantém o conteúdo. **Próximo** permite continuar o rascunho com pendências. Os erros aparecem junto aos campos, e salvar/exportar verificam os identificadores, formatos e registros iniciados. Os demais requisitos pendentes acompanham o Excel.
 
+O menu de etapas usa um pequeno ponto amarelo para pendências e um visto verde para etapas concluídas. Campos obrigatórios vazios recebem o mesmo ponto, mantendo bordas neutras. A quantidade aparece no cabeçalho da etapa e no seletor do celular, atualizada durante o preenchimento; também está disponível para leitores de tela e ao passar o mouse nos símbolos do menu. Essa sinalização não antecipa mensagens de erro nos campos ainda não editados.
+
 ## Regras e integridade
 
 - A aba **Veículos** do Excel mantém os **33 campos**, exatamente na ordem e com os textos da seção 5 do [levantamento original](README_LEVANTAMENTO_TECNICO_VEICULOS.md). Eles também fazem parte do formulário completo. Os testes comparam os cabeçalhos com a linha 4 de `modelos_excel/VEICULO.xlsx`.

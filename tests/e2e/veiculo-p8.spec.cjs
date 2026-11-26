@@ -5,7 +5,13 @@ const ExcelJS = require('exceljs');
 const JSZip = require('jszip');
 const { readFile } = require('node:fs/promises');
 const storageKey = 'levantamento-tecnico-veiculos:v1';
-const { field, reveal, visit: step } = require('./veiculos-helpers.cjs');
+const {
+  field,
+  reveal,
+  visit: step,
+  identify,
+  start: startEmpty,
+} = require('./veiculos-helpers.cjs');
 async function start(page) {
   await page.goto('/');
   await page.locator('[data-action="new"]').first().click();
@@ -187,6 +193,60 @@ test('P8 abre diretamente por file sem serviços externos', async ({ page }) => 
   await page.locator('[data-action="new"]').first().click();
   await expect(field(page, 'marca')).toBeVisible();
   expect(external).toEqual([]);
+});
+
+test('pendências visíveis: contagens, campos e condicionais acompanham o preenchimento', async ({
+  page,
+}, info) => {
+  await startEmpty(page);
+  const current = page.locator('[data-p8-current-status]');
+  const status = (key) => page.locator(`[data-p8-stage="${key}"] .p8-nav-state`);
+  const wrapper = (key) => field(page, key).locator('..');
+  await expect(current).toHaveText('5 pendentes');
+  await expect(status('identificacao')).toHaveText('5 pendentes');
+  await expect(page.locator('#p8-step-select option[value="identificacao"]')).toHaveText(
+    'Identificação · 5 pendentes',
+  );
+  await expect(wrapper('marca')).toHaveClass(/is-pending/);
+  await expect(wrapper('marca').locator('.p8-field-state')).toBeVisible();
+  await expect(wrapper('marca').locator('.p8-field-state')).toHaveAttribute('title', 'Pendente');
+  await expect(status('identificacao').locator('.p8-pending-dot')).toHaveCount(1);
+  await expect(status('identificacao').locator('.sr-only')).toHaveText('5 pendentes');
+  await expect(field(page, 'marca')).not.toHaveAttribute('aria-invalid', 'true');
+  await expect(wrapper('marca').locator('.field-error')).toBeHidden();
+  await expect(wrapper('configuracaoBaseVeiculo')).not.toHaveClass(/is-pending/);
+  await identify(page);
+  await expect(current).toHaveText('1 pendente');
+  await expect(wrapper('marca')).not.toHaveClass(/is-pending/);
+  await expect(wrapper('marca').locator('.p8-field-state')).toBeHidden();
+  await field(page, 'importadoVeiculo').selectOption('Não');
+  await expect(current).toHaveText('Concluída');
+  await expect(status('identificacao')).toHaveClass(/complete/);
+  await expect(status('identificacao').locator('.p8-pending-dot')).toHaveCount(0);
+  await expect(status('identificacao').locator('.icon')).toHaveCount(1);
+  await expect(status('origem')).toHaveText('2 pendentes');
+  await field(page, 'importadoVeiculo').selectOption('Sim');
+  await expect(status('origem')).toHaveText('5 pendentes');
+  await field(page, 'modelo').fill('');
+  await expect(current).toHaveText('1 pendente');
+  await expect(field(page, 'modelo')).toHaveAttribute('aria-invalid', 'true');
+  await page.reload();
+  await expect(current).toHaveText('1 pendente');
+  await expect(wrapper('modelo')).toHaveClass(/is-pending/);
+  await expect(wrapper('modelo').locator('.field-error')).toBeHidden();
+  await page.screenshot({ path: info.outputPath('pendencias-identificacao.png'), fullPage: true });
+  await step(page, 'configuracao');
+  await field(page, 'numeroDePassageiros').fill('0');
+  await expect(wrapper('numeroDePassageiros')).not.toHaveClass(/is-pending/);
+  await expect(field(page, 'numeroDePassageiros')).toHaveAttribute('aria-invalid', 'false');
+  await step(page, 'componentes');
+  await expect(current).toHaveText('1 pendente');
+  await page.getByRole('button', { name: 'Adicionar componente', exact: true }).click();
+  await expect(current).toHaveText('6 pendentes');
+  const inputs = page.locator('.p8-collection input');
+  for (let index = 0; index < 6; index++) await inputs.nth(index).fill('1');
+  await expect(current).toHaveText('Concluída');
+  await expect(status('componentes')).toHaveText('Concluída');
 });
 
 test('correções visuais: barra não sobrepõe campos, nenhum null é renderizado e Motores vem primeiro', async ({
