@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vercel/
+artifacts/
+.npm-cache/
+vendor/
+test-results/
+playwright-report/
+modelos_excel/
+README_LEVANTAMENTO_TECNICO_VEICULOS.md
+AGENTS.md
+package-lock.json

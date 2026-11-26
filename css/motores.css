@@ -1,0 +1,554 @@
+.domain-switch {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 24px;
+  flex-wrap: wrap;
+}
+.domain-switch button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+}
+.domain-switch button[aria-pressed='true'] {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+#motor-workspace {
+  min-width: 0;
+  font-size: 16px;
+}
+.motor-toolbar,
+.motor-actions,
+.motor-record-heading,
+.motor-row-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.motor-toolbar {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.motor-toolbar p,
+.motor-heading-note {
+  margin-top: 6px;
+  color: var(--muted);
+}
+.motor-select {
+  max-width: 100%;
+  min-width: 220px;
+}
+.motor-record-heading {
+  justify-content: space-between;
+  margin: 0 0 20px;
+}
+.motor-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-width: 0;
+}
+.motor-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.motor-tabs button {
+  font-size: 16px;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+}
+.motor-tabs button[aria-selected='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+.motor-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+.motor-section summary {
+  cursor: pointer;
+  padding: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+.motor-section summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.motor-section > .form-fields {
+  padding: 8px 16px 20px;
+}
+.motor-body .field {
+  min-width: 0;
+  font-size: 14px;
+}
+.motor-body .field label {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.motor-body input,
+.motor-body select,
+.motor-body textarea {
+  font-size: 16px;
+}
+.motor-body input[readonly] {
+  background: #f4f7fa;
+  color: var(--muted);
+}
+.motor-collection {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.motor-row {
+  border-top: 1px solid var(--border);
+  padding: 16px 0;
+}
+.motor-row .form-fields {
+  margin-top: 12px;
+}
+.motor-row-heading {
+  justify-content: space-between;
+}
+.motor-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+.motor-pdf-name {
+  overflow-wrap: anywhere;
+}
+.motor-upload input[type='file'] {
+  padding: 10px;
+  height: auto;
+  max-width: 100%;
+}
+.motor-upload input[type='file']::file-selector-button {
+  border: 0;
+  border-radius: 4px;
+  padding: 8px;
+  margin-right: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.motor-status {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.motor-message {
+  margin-bottom: 16px;
+}
+.motor-pending {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+.motor-pending li {
+  padding: 6px 0;
+}
+.motor-pending button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  text-align: left;
+  text-decoration: underline;
+  font-size: 14px;
+}
+.motor-review-list {
+  margin: 0 16px 20px;
+}
+.motor-review-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.motor-review-list dt {
+  font-weight: 600;
+}
+.motor-review-list dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.motor-review-list dd.pending {
+  color: var(--muted);
+  font-style: italic;
+}
+.motor-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.motor-overall-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 0 24px;
+}
+.motor-overall-progress > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+}
+.motor-overall-progress strong {
+  color: var(--ink);
+}
+#motor-progress-text {
+  font-size: 14px;
+  color: var(--muted);
+}
+.motor-overall-progress progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--accent);
+}
+.motor-body .motor-tabs {
+  margin-bottom: 16px;
+}
+.motor-body .motor-heading-note {
+  font-size: 14px;
+}
+.motor-flow {
+  display: grid;
+  grid-template-columns: 225px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  margin-top: 28px;
+}
+.motor-step-nav {
+  position: sticky;
+  top: 24px;
+}
+.motor-step-nav > p {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.motor-step-nav ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+.motor-step-button {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  padding: 12px 8px;
+}
+.motor-step-button:hover {
+  background: #f4f7fb;
+}
+.motor-step-button.current {
+  background: var(--accent-soft);
+  border-color: #c7d9f9;
+  color: var(--accent);
+}
+.motor-step-button strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+.motor-step-index {
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+.motor-step-button.current .motor-step-index {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.motor-step-button.complete .motor-step-index {
+  color: var(--success);
+  background: #eef8f1;
+  border-color: #b8dcc6;
+}
+.motor-step-count {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.motor-mobile-step {
+  display: none;
+}
+.motor-step-content,
+.motor-stage {
+  min-width: 0;
+}
+.motor-stage {
+  scroll-margin-top: 24px;
+}
+.motor-stage-heading {
+  margin-bottom: 28px;
+}
+.motor-stage-heading h3 {
+  margin: 6px 0 8px;
+  font-size: 24px;
+  line-height: 1.25;
+}
+.motor-stage-heading > p:last-child {
+  color: var(--muted);
+}
+.motor-step-section {
+  border: 0;
+  margin: 0 0 28px;
+  padding: 0;
+  min-width: 0;
+}
+.motor-group-title {
+  padding: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+.motor-body .form-fields {
+  gap: 20px 24px;
+}
+.motor-optional {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.motor-input-unit {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+.motor-input-unit:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 12%);
+}
+.motor-input-unit:has(input[aria-invalid='true']) {
+  border-color: var(--danger);
+}
+.motor-body .motor-input-unit input {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-width: 0;
+  flex: 1;
+  width: 0;
+}
+.motor-input-unit > span {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: #f4f7fa;
+  color: var(--muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.motor-dependent {
+  padding-left: 12px;
+  border-left: 2px solid #c7d9f9;
+}
+.motor-extra-reference {
+  margin: 8px 0 24px;
+  min-width: 0;
+}
+.motor-extra-reference summary {
+  color: var(--muted);
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 14px;
+}
+.motor-extra-reference > .field,
+.motor-extra-reference > fieldset {
+  margin-top: 12px;
+}
+.motor-extra-reference summary:focus-visible,
+.motor-documents summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.motor-documents {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 24px;
+}
+.motor-documents > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px 0;
+  color: var(--ink);
+}
+.motor-document-count {
+  margin-left: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.motor-document-hint {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+.motor-documents .motor-upload {
+  border: 1px dashed var(--border);
+  padding: 16px;
+  border-radius: 8px;
+}
+.motor-collection > button {
+  margin-bottom: 16px;
+}
+.motor-navigation {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin: 24px -24px -24px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: white;
+  border-radius: 0 0 var(--radius) var(--radius);
+  align-items: center;
+}
+.motor-navigation > div {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.motor-stage-status {
+  font-size: 14px;
+  color: var(--muted);
+}
+.motor-resume {
+  margin-top: 20px;
+}
+.motor-pending-group > summary .count {
+  margin-left: 12px;
+  font-weight: 500;
+}
+.motor-review-heading {
+  margin-top: 32px;
+}
+.motor-review-edit {
+  margin: 0 16px 12px;
+}
+@media (max-width: 960px) {
+  .motor-flow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .motor-step-nav {
+    display: none;
+  }
+  .motor-mobile-step {
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .motor-mobile-step select {
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .motor-body {
+    padding: 16px 8px;
+  }
+  .motor-toolbar {
+    align-items: stretch;
+  }
+  .motor-toolbar .motor-actions {
+    width: 100%;
+  }
+  .motor-select {
+    min-width: 0;
+    width: 100%;
+  }
+  .motor-review-list > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .motor-record-heading > label {
+    width: 100%;
+  }
+  .motor-tabs {
+    gap: 0;
+  }
+  .motor-tabs button {
+    padding: 12px 10px;
+  }
+  .motor-body .motor-tabs button {
+    font-size: 14px;
+    padding: 12px 8px;
+  }
+  .motor-overall-progress {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .motor-body .form-fields {
+    gap: 20px;
+  }
+  .motor-stage-heading h3 {
+    font-size: 22px;
+  }
+  .motor-navigation {
+    margin: 24px -8px -16px;
+    padding: 12px;
+    gap: 12px;
+  }
+  .motor-navigation > div {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .motor-navigation .motor-actions {
+    flex-wrap: nowrap;
+  }
+  .motor-navigation .motor-actions > button {
+    flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .motor-stage-status {
+    font-size: 13px;
+  }
+  .motor-document-count {
+    display: block;
+    margin-left: 18px;
+    margin-top: 4px;
+  }
+  .motor-documents .motor-upload {
+    padding: 12px;
+  }
+}

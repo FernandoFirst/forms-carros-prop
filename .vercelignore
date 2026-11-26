@@ -1,0 +1,14 @@
+node_modules/
+.npm-cache/
+.git/
+.vercel/
+dist/
+artifacts/
+test-results/
+playwright-report/
+tests/
+modelos_excel/
+AGENTS.md
+README*.md
+.env*
+*.log

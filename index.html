@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1d2d45" />
+    <meta
+      name="description"
+      content="Cadastre, revise e exporte os dados técnicos de veículos e motores diesel MAR1. Dados e PDFs ficam neste navegador."
+    />
+    <title>Levantamento Técnico de Veículos e Motores</title>
+    <link rel="icon" type="image/png" href="assets/first-symbol.png" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/motores.css" />
+    <script defer src="vendor/exceljs.min.js"></script>
+    <script defer src="js/campos.js"></script>
+    <script defer src="js/validacao.js"></script>
+    <script defer src="js/veiculo-p8-campos.js"></script>
+    <script defer src="js/veiculo-p8-dados.js"></script>
+    <script defer src="js/veiculo-p8-exportacao.js"></script>
+    <script defer src="js/storage.js"></script>
+    <script defer src="js/exportacao.js"></script>
+    <script defer src="js/ui.js"></script>
+    <script defer src="js/planilha.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/motor-campos.js"></script>
+    <script defer src="js/motor-dados.js"></script>
+    <script defer src="js/motor-arquivos.js"></script>
+    <script defer src="js/motor-exportacao.js"></script>
+    <script defer src="js/motor-app.js"></script>
+    <script defer src="js/veiculo-p8-app.js"></script>
+    <link rel="stylesheet" href="css/veiculo-p8.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Ir para o conteúdo</a>
+    <header class="app-header">
+      <a
+        class="brand"
+        href="index.html"
+        aria-label="FIRST S.A. — Levantamento técnico de veículos e motores"
+      >
+        <img src="assets/first-symbol.png" width="44" height="44" alt="" />
+        <span>FIRST <small>S.A.</small></span>
+      </a>
+      <div class="header-context">
+        <strong>Portal do cliente</strong><span>Levantamento técnico</span>
+      </div>
+      <span class="privacy-chip"><span data-icon="shield"></span> Preenchimento privado</span>
+      <span class="version">V1.0</span>
+    </header>
+
+    <main class="page">
+      <section class="page-heading" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">VEÍCULOS & MÁQUINAS <span class="intro-divider"></span> FIRST S.A.</p>
+          <h1 id="page-title">Levantamento Técnico de Veículos</h1>
+          <p class="page-subtitle">Preencha, revise e exporte os dados técnicos.</p>
+        </div>
+        <button
+          class="button button-dark"
+          id="export-button"
+          type="button"
+          title="Exporte todos os veículos, independentemente dos filtros"
+          disabled
+        >
+          <span data-icon="download"></span><span id="export-label">Exportar Excel</span
+          ><span class="file-tag">.xlsx</span>
+        </button>
+      </section>
+
+      <div id="storage-warning" class="banner banner-warning" role="alert" hidden>
+        <span id="storage-warning-text"></span>
+        <button id="backup-button" class="text-button" type="button" hidden>
+          Baixar rascunho original
+        </button>
+      </div>
+      <noscript
+        ><p class="banner banner-warning">
+          Ative o JavaScript no navegador para cadastrar os veículos e gerar o Excel.
+        </p></noscript
+      >
+
+      <nav class="domain-switch" aria-label="Tipo de levantamento">
+        <button type="button" id="domain-veiculos" aria-pressed="true">Veículos</button>
+        <button type="button" id="domain-motores" aria-pressed="false">Motores MAR1</button>
+      </nav>
+
+      <div class="workspace-layout" id="vehicle-workspace">
+        <aside class="fleet-panel" aria-labelledby="fleet-title">
+          <div class="fleet-heading">
+            <p class="eyebrow">SEU LEVANTAMENTO</p>
+            <h2 id="fleet-title">Seus veículos <span id="fleet-count" class="count">0</span></h2>
+          </div>
+          <button type="button" class="button button-outline new-vehicle" data-action="new">
+            <span data-icon="plus"></span>Novo veículo
+          </button>
+          <label class="mobile-vehicle-switch" for="mobile-vehicle-select"
+            >Veículo em edição<select id="mobile-vehicle-select">
+              <option value="">Nenhum veículo</option>
+            </select></label
+          >
+          <div id="vehicle-list" class="vehicle-list"></div>
+          <div class="fleet-footer">
+            <div class="local-note">
+              <span data-icon="shield"></span>
+              <div>
+                <strong>Preenchimento privado</strong>
+                <p>Sem login e sem envio de dados. Tudo fica neste navegador.</p>
+              </div>
+            </div>
+            <button type="button" id="clear-button" class="text-button muted">
+              <span data-icon="trash"></span>Limpar dados
+            </button>
+          </div>
+        </aside>
+
+        <section id="workspace" class="workspace" tabindex="-1" aria-label="Área de preenchimento">
+          <div class="workspace-toolbar">
+            <div class="tabs" role="tablist" aria-label="Modo de edição">
+              <button
+                class="tab active"
+                id="tab-formulario"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-formulario"
+                type="button"
+              >
+                <span data-icon="form"></span>Formulário
+              </button>
+              <button
+                class="tab"
+                id="tab-planilha"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-planilha"
+                aria-label="Visualizar Planilha"
+                tabindex="-1"
+                type="button"
+              >
+                <span data-icon="table"></span>Planilha
+              </button>
+            </div>
+            <span id="autosave-status" class="autosave-status" role="status"
+              ><span class="status-dot"></span
+              ><span id="autosave-text">Pronto para começar</span></span
+            >
+          </div>
+
+          <div class="overview" aria-label="Resumo do levantamento">
+            <div>
+              <span class="stat-icon" data-icon="truck" aria-hidden="true"></span>
+              <span class="stat-value" id="stat-total">00</span
+              ><span>veículos no levantamento</span>
+            </div>
+            <div>
+              <span class="stat-icon pending" data-icon="edit" aria-hidden="true"></span>
+              <span class="stat-value" id="stat-pending">00</span
+              ><span>com informações pendentes</span>
+            </div>
+            <div>
+              <span class="stat-icon" data-icon="table" aria-hidden="true"></span>
+              <span class="stat-value stat-static">33</span><span>campos padronizados</span>
+            </div>
+          </div>
+
+          <div id="panel-formulario" role="tabpanel" aria-labelledby="tab-formulario"></div>
+
+          <div id="panel-planilha" role="tabpanel" aria-labelledby="tab-planilha" hidden>
+            <div class="sheet-heading">
+              <div>
+                <h2>Uma visão completa.</h2>
+                <p>Edite uma célula para atualizar os mesmos dados do formulário.</p>
+              </div>
+              <span class="badge neutral">33 colunas</span>
+            </div>
+            <div class="sheet-tools">
+              <label class="search-field" for="sheet-search"
+                ><span data-icon="search"></span
+                ><input
+                  type="search"
+                  id="sheet-search"
+                  placeholder="Buscar por ID, marca, modelo ou fabricante"
+                  autocomplete="off" /></label
+              ><label class="filter-field" for="sheet-filter"
+                ><span class="sr-only">Filtrar por preenchimento</span
+                ><select id="sheet-filter">
+                  <option value="todos">Todos os veículos</option>
+                  <option value="pendentes">Com pendências</option>
+                  <option value="completos">Completos</option>
+                </select></label
+              >
+            </div>
+            <div id="sheet-feedback" class="sheet-feedback" role="status"></div>
+            <div id="sheet-empty" class="empty-state sheet-empty" hidden>
+              <span data-icon="table" class="empty-icon"></span>
+              <h3 id="sheet-empty-title">Ainda não há veículos por aqui.</h3>
+              <p id="sheet-empty-description">
+                Cadastre seu primeiro veículo para conferir os dados na planilha.
+              </p>
+              <button
+                type="button"
+                class="button button-primary"
+                id="sheet-empty-action"
+                data-action="new"
+              >
+                <span data-icon="plus"></span>Novo veículo
+              </button>
+            </div>
+            <div
+              id="table-scroll"
+              class="table-scroll"
+              tabindex="0"
+              role="region"
+              aria-label="Planilha editável. Role horizontalmente para ver as 33 colunas."
+            >
+              <table id="vehicles-table">
+                <caption class="sr-only">
+                  Dados técnicos: uma linha por veículo, 33 colunas na ordem de exportação.
+                </caption>
+                <thead id="sheet-head"></thead>
+                <tbody id="sheet-body"></tbody>
+              </table>
+            </div>
+            <div class="sheet-bottom">
+              <span id="sheet-result-count" role="status"></span
+              ><span><span data-icon="arrowLeftRight"></span>Role para ver todas as colunas</span>
+            </div>
+            <p class="sheet-export-note">
+              A exportação inclui todos os veículos, mesmo com uma busca ou filtro ativo.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <section id="motor-workspace" aria-label="Levantamento de motores MAR1" hidden></section>
+
+      <footer class="page-footer" id="vehicle-persistence">
+        <span data-icon="save"></span>
+        <p id="persistence-note">
+          Rascunho salvo neste navegador. Exporte o Excel para manter uma cópia.
+        </p>
+        <span class="footer-detail">Local · sem sincronização entre dispositivos</span>
+      </footer>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer-content">
+        <strong>FIRST S.A.</strong
+        ><span
+          >Portal de levantamento técnico <span class="footer-separator">/</span> Veículos e
+          máquinas</span
+        >
+      </div>
+      <div class="brand-stripes" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <dialog
+      id="confirm-dialog"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-description"
+    >
+      <form method="dialog">
+        <div class="dialog-symbol"><span data-icon="trash"></span></div>
+        <h2 id="confirm-title">Excluir veículo?</h2>
+        <p id="confirm-description"></p>
+        <div class="dialog-actions">
+          <button class="button button-outline" value="cancel" autofocus>Cancelar</button
+          ><button id="confirm-accept" class="button button-danger" value="confirm">
+            Excluir veículo
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
